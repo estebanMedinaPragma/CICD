@@ -37,8 +37,8 @@ jobs:
         run: |
           flutter pub get
           flutter clean
-          run: flutter build apk
-          run: flutter build appbundle
+          flutter build apk
+          flutter build appbundle
         
       - name: Upload Android Release
         uses: actions/upload-artifact@v2
