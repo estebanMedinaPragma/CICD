@@ -1,0 +1,47 @@
+name: Android Build CI - APK 
+run-name: Deployed by @${{ github.actor }}
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "develop"]
+  pull_request:
+    branches: [ "main", "develop"]
+    types: [labeled, opened, synchronize, reopened] 
+
+env:
+  CONDITIONAL_BRANCH_DEV: "refs/heads/develop"
+  CONDITIONAL_BRANCH_MAIN: "refs/heads/main"
+jobs:
+  build:
+    name: Android Flutter Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.3.0
+      
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.11.0
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.7.12
+          cache: true
+      - name: Flutter Pub Get
+        run: |
+          flutter pub get
+          flutter clean
+          run: flutter build apk
+          run: flutter build appbundle
+        
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-release
+          path: build
