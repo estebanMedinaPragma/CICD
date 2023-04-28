@@ -1,6 +1,9 @@
 name: Flutter CI - Unit Tests
 run-name: Deployed by @${{ github.actor }}
 on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "develop"]
   pull_request:
     branches: [ "main", "develop" ]
     types: [labeled, opened, synchronize, reopened]
